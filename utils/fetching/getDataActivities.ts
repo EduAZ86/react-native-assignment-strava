@@ -1,4 +1,5 @@
-import { IActivity } from "@/hooks/useGetActivities/types";
+
+import { IActivity } from "@/types/activities.type";
 import { IStatistics } from "@/types/statistics.type";
 import { stravaAPI } from "@/utils/fetching/stravaApiAxios";
 

@@ -31,8 +31,13 @@ export const getLocalToken = async () => {
 };
 
 export const setLocalToken = async (token: string) => {
-    await AsyncStorage.setItem('@token', token);
+    try {
+        await AsyncStorage.setItem('@token', token);
+    } catch (error) {
+        console.error("Error saving token:", error);
+    }
 };
+
 
 export const removeLocalToken = async () => {
     await AsyncStorage.removeItem('@token');

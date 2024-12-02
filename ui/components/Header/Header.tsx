@@ -6,7 +6,13 @@ import { usePathname } from "expo-router";
 export const Header: FC<IHeaderProps> = ({ userName, image }) => {
     const path = usePathname()
     
-    const screenName = (path.split('/')[1]).split('')[0].toLocaleUpperCase()+(path.split('/')[1]).slice(1)
+    const screenName = path
+        .split('/')
+        .filter(Boolean)
+        .pop() 
+        ?.replace(/-/g, ' ') 
+        .replace(/\b\w/g, char => char.toUpperCase()) || '';
+    
     return (
         <View
             className="relative flex flex-row justify-between items-center bg-light-primary drop-shadow-lg px-2 w-full h-10"
