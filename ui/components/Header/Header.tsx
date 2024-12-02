@@ -22,7 +22,6 @@ export const Header: FC<IHeaderProps> = ({ userName, image }) => {
                 <Text className="font-medium text-light-secondary">{userName}</Text>
                 <Image className="shadow-lg rounded-full w-8 h-8" source={{ uri: image }} />
             </View>
-
         </View>
     )
 }

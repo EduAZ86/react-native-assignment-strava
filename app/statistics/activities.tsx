@@ -22,7 +22,6 @@ export default function ActivitiesScreen() {
     return (
         <PageContainer>
             <Text className='justify-center w-full font-bold text-2xl text-center'>Activities</Text>
-
             <FlatList
                 data={data?.pages.flat()}
                 keyExtractor={(item: IActivity) => item.id.toString()}
@@ -31,8 +30,6 @@ export default function ActivitiesScreen() {
                 onEndReachedThreshold={0.1}
                 ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="large" /> : null}
             />
-
-
 
         </PageContainer>
     );
