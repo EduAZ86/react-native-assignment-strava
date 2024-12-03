@@ -11,12 +11,13 @@ WebBrowser.maybeCompleteAuthSession();
 export default function LoginScreen() {
     const router = useRouter();
 
-    const { athleteLoggedInfo, promptAsync, isLoading } = useAuthSession();
+    const { isLoggedIn, promptAsync, isLoading } = useAuthSession();
+    
     useEffect(() => {
-        if (athleteLoggedInfo) {
+        if (isLoggedIn) {
             router.replace('./statistics');
         }
-    }, [athleteLoggedInfo]);
+    }, [isLoggedIn]);
     return (
         <PageContainer>
             <View

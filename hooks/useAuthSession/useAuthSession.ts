@@ -1,9 +1,10 @@
 
 import { useAuthStore } from '@/lib/zustand/useSessionStore';
-import { localUserHandler, setLocalToken } from '@/utils/asyncStorage/asyncStorage';
+import { getLocalToken, localUserHandler, setLocalToken } from '@/utils/asyncStorage/asyncStorage';
 import { stravaAPI } from '@/utils/fetching/stravaApiAxios';
 import { useAuthRequest, makeRedirectUri, } from 'expo-auth-session';
 import { useEffect, useState } from 'react';
+import { useGetAthlete } from '../useGetAthlete/useGetAthlete';
 
 const discovery = {
     authorizationEndpoint: 'https://www.strava.com/oauth/mobile/authorize',
@@ -18,13 +19,13 @@ const redirectUri = makeRedirectUri({
     isTripleSlashed: true,
 
 });
-
 export const useAuthSession = () => {
 
     const { athleteLoggedInfo, setAtleteLoggedInfo } = useAuthStore();
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const { getLocalUser, setLocalUser, removeLocalUser } = localUserHandler()
+    const { getLocalUser, setLocalUser } = localUserHandler()
+
 
     const [request, response, promptAsync] = useAuthRequest(
         {
@@ -35,14 +36,19 @@ export const useAuthSession = () => {
             responseType: "code",
         },
         discovery,
-
     );
+
     useEffect(() => {
-        if (response?.type === "success") {
-            SinInWithStrava(response.params.code);
-            exchangeCodeForToken(response.params.code);
-            setIsLoggedIn(true);
-        }
+        const handleAuthResponse = async () => {
+            if (response?.type === "success") {
+                console.log('response useAuthRequest', response);
+
+                await exchangeCodeForToken(response.params.code);
+                await SinInWithStrava();
+                setIsLoggedIn(true);
+            }
+        };
+        handleAuthResponse();
     }, [response]);
 
     const exchangeCodeForToken = async (code: string) => {
@@ -54,7 +60,8 @@ export const useAuthSession = () => {
                 grant_type: 'authorization_code',
             });
             const accessToken = data.access_token;
-            await setLocalToken(accessToken);       
+            await setLocalToken(accessToken);
+            await getAthleteInfo(accessToken);
         } catch (error) {
             console.error('Error exchanging code for token:', error);
         }
@@ -69,26 +76,30 @@ export const useAuthSession = () => {
                 },
             });
             setAtleteLoggedInfo(data);
-            setLocalUser(data);
+            await setLocalUser(data);
         } catch (error) {
             console.error('Error fetching user info:', error);
         }
     }
-    const SinInWithStrava = async (token: string) => {
-        setIsLoading(true);
-        const localAthlete = await getLocalUser();
-        try {
-            if (!localAthlete) {
-                await getAthleteInfo(token);
-            } else {
-                setAtleteLoggedInfo(localAthlete);
+    const SinInWithStrava = async () => {
+        const token = await getLocalToken();
+        if (token) {
+            setIsLoading(true);
+            const localAthlete = await getLocalUser();
+            try {
+                if (!localAthlete) {
+                    await getAthleteInfo(token);
+                } else {
+                    setAtleteLoggedInfo(localAthlete);
+                }
+            } catch (error) {
+                console.error("Error fetching access token:", error);
+            } finally {
+                setIsLoading(false);
             }
-        } catch (error) {
-            console.error("Error fetching access token:", error);
-        } finally {
-            setIsLoading(false);
         }
     };
+
 
     return { response, promptAsync, athleteLoggedInfo, isLoading, isLoggedIn };
 };

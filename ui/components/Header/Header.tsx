@@ -15,7 +15,7 @@ export const Header: FC<IHeaderProps> = ({ userName, image }) => {
     
     return (
         <View
-            className="relative flex flex-row justify-between items-center bg-light-primary drop-shadow-lg px-2 w-full h-10"
+            className="relative flex flex-row justify-between items-center bg-light-primary drop-shadow-lg px-2 w-full h-12"
         >
             <Text className="font-bold text-lg text-light-secondary" >{screenName}</Text>
             <View className="flex flex-row items-center gap-2">

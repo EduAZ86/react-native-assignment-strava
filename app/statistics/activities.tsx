@@ -11,10 +11,7 @@ import { ActivityCard } from '@/ui/components/Activity/ActivityCard';
 export default function ActivitiesScreen() {
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetActivities()
-    
-
-
-    const handleLoadMore = () => {
+      const handleLoadMore = () => {
         if (hasNextPage && !isFetchingNextPage) {
             fetchNextPage();
         }
@@ -29,6 +26,8 @@ export default function ActivitiesScreen() {
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.1}
                 ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="large" /> : null}
+                className='flex flex-col p-4 w-full'
+                ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
             />
 
         </PageContainer>

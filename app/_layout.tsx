@@ -8,7 +8,7 @@ import 'react-native-reanimated';
 import "./global.css";
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Provider } from '@/providers/Provider';
-import { useAuthStore } from '@/lib/zustand/useSessionStore';
+import { useAuthSession } from '@/hooks/useAuthSession/useAuthSession';
 
 
 SplashScreen.preventAutoHideAsync();
@@ -16,17 +16,18 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  const { athleteLoggedInfo } = useAuthStore();
+  const { isLoggedIn, athleteLoggedInfo, } = useAuthSession();
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   useEffect(() => {
-    if (loaded) {
+    if (isLoggedIn && loaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [isLoggedIn, loaded]);
+
   if (!loaded) {
     return null;
   }

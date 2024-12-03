@@ -12,7 +12,7 @@ export const PageContainer: FC<IPageContainerProps> = ({ children }) => {
                 flex-1          
                 flex-col
                 justify-center items-start
-                gap-8
+                gap-2
                 py-4
                 bg-light-background                                           
                 `}       
